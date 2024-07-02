@@ -20,7 +20,9 @@ public:
 };
 
 void LoadReportThread(ReportViewerWrapperImpl* wrapper, const wchar_t* reportPath) {
-    wrapper->reportViewer->LoadReport(gcnew System::String(reportPath));
+    System::String^ managedReportPath = gcnew System::String(reportPath);
+    System::Diagnostics::Debug::WriteLine("LoadReportThread: " + managedReportPath);
+    wrapper->reportViewer->LoadReport(managedReportPath);
 }
 
 extern "C" {

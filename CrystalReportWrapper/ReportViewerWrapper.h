@@ -2,8 +2,6 @@
 
 #include <vcclr.h> // For gcroot
 #include "ReportViewerControl.h"
-#include <thread>
-#include <windows.h>
 
 using namespace System;
 using namespace System::Windows::Forms;
@@ -41,7 +39,23 @@ public:
 
 private:
     void LoadReportImpl(String^ reportPath) {
-        userControl->LoadReport(reportPath);
+        userControl->LoadReport("C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\BlankReport.rpt");
+        /*
+        System::Diagnostics::Debug::WriteLine("Attempting to load report: " + reportPath);
+        if (String::IsNullOrEmpty(reportPath) || !System::IO::File::Exists(reportPath)) {
+            System::Diagnostics::Debug::WriteLine("Invalid report path: " + reportPath);
+            MessageBox::Show("Invalid report path: " + reportPath, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+            return;
+        }
+        try {
+            userControl->LoadReport(reportPath);
+            System::Diagnostics::Debug::WriteLine("Report loaded successfully: " + reportPath);
+        }
+        catch (Exception^ ex) {
+            System::Diagnostics::Debug::WriteLine("Error loading report: " + ex->Message);
+            MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+        }
+        */
     }
 
     void InitializeImpl(IntPtr hwndParent) {

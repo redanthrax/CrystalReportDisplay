@@ -14,10 +14,13 @@ namespace CrystalReportWrapper {
         }
 
         void LoadReport(String^ reportPath) {
+            System::Diagnostics::Debug::WriteLine("Setting report source: " + reportPath);
             try {
                 this->crystalReportViewer->ReportSource = reportPath;
+                System::Diagnostics::Debug::WriteLine("Report source set successfully: " + reportPath);
             }
             catch (Exception^ ex) {
+                System::Diagnostics::Debug::WriteLine("Error setting report source: " + ex->Message);
                 MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
             }
         }
