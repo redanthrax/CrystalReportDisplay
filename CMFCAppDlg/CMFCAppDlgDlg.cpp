@@ -48,7 +48,6 @@ END_MESSAGE_MAP()
 
 // CCMFCAppDlgDlg dialog
 
-// Forward declarations of the DLL functions
 extern "C" {
 	__declspec(dllimport) void* CreateReportViewer();
 	__declspec(dllimport) void DestroyReportViewer(void* instance);
@@ -109,7 +108,7 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
 
 	// TODO: Add extra initialization here
 
-	 // Create the ReportViewer instance
+	// Create the ReportViewer instance
 	m_pReportViewerInstance = CreateReportViewer();
 
 	// Get the placeholder window handle
@@ -126,7 +125,14 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
 	InitializeReportViewer(m_pReportViewerInstance, m_ctrlPlaceholder.GetSafeHwnd());
 
 	// Load the report
-	LoadReport(m_pReportViewerInstance, L"C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\Debug\\BlankReport.rpt");
+	CString reportPath = L"C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\Debug\\BlankReport.rpt";
+	if (PathFileExists(reportPath)) {
+		LoadReport(m_pReportViewerInstance, reportPath);
+	}
+	else {
+		AfxMessageBox(_T("Report file not found!"));
+		return FALSE;  // Ensure report file exists
+	}
 
 	return TRUE;  // return TRUE  unless you set the focus to a control
 }

@@ -5,7 +5,6 @@
 #include "ReportViewerWrapper.h"
 #include <thread>
 #include <exception>  // Include the exception header
-#include <comdef.h>   // For _com_error
 
 class ReportViewerWrapperImpl {
 public:
@@ -21,24 +20,7 @@ public:
 };
 
 void LoadReportThread(ReportViewerWrapperImpl* wrapper, const wchar_t* reportPath) {
-    try {
-        CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED); // Ensure COM is initialized
-        wrapper->reportViewer->LoadReport(gcnew String(reportPath));
-        CoUninitialize(); // Clean up COM
-    }
-    catch (const std::exception& e) {
-        OutputDebugStringA(e.what());
-        OutputDebugStringA("\n");
-    }
-    catch (_com_error& e) {
-        _bstr_t bstrSource(e.Source());
-        _bstr_t bstrDescription(e.Description());
-        OutputDebugString(L"COM Error occurred:\n");
-        OutputDebugString(bstrSource);
-        OutputDebugString(L"\n");
-        OutputDebugString(bstrDescription);
-        OutputDebugString(L"\n");
-    }
+    wrapper->reportViewer->LoadReport(gcnew System::String(reportPath));
 }
 
 extern "C" {
@@ -52,7 +34,7 @@ extern "C" {
 
     EXPORT_API void InitializeReportViewer(void* instance, HWND hwndParent) {
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
-        wrapper->reportViewer->Initialize(IntPtr(hwndParent));
+        wrapper->reportViewer->Initialize(System::IntPtr(hwndParent));
     }
 
     EXPORT_API void LoadReport(void* instance, const wchar_t* reportPath) {
