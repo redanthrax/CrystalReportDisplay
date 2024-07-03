@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClInclude Include="CrystalReportWrapper.h" />
     <ClInclude Include="ExportedFunctions.h" />
+    <ClInclude Include="ManagedWrapper.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="ReportViewerControl.h" />
     <ClInclude Include="ReportViewerWrapper.h" />

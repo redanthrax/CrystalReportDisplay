@@ -13,47 +13,18 @@
 #endif
 
 
-// CAboutDlg dialog used for App About
-
-class CAboutDlg : public CDialogEx
-{
-public:
-	CAboutDlg();
-
-// Dialog Data
-#ifdef AFX_DESIGN_TIME
-	enum { IDD = IDD_ABOUTBOX };
-#endif
-
-	protected:
-	virtual void DoDataExchange(CDataExchange* pDX);    // DDX/DDV support
-
-// Implementation
-protected:
-	DECLARE_MESSAGE_MAP()
-};
-
-CAboutDlg::CAboutDlg() : CDialogEx(IDD_ABOUTBOX)
-{
-}
-
-void CAboutDlg::DoDataExchange(CDataExchange* pDX)
-{
-	CDialogEx::DoDataExchange(pDX);
-}
-
-BEGIN_MESSAGE_MAP(CAboutDlg, CDialogEx)
-END_MESSAGE_MAP()
-
-
 // CCMFCAppDlgDlg dialog
 
 // Forward declarations of the DLL functions
 extern "C" {
-	__declspec(dllimport) void* CreateReportViewer();
-	__declspec(dllimport) void DestroyReportViewer(void* instance);
-	__declspec(dllimport) void InitializeReportViewer(void* instance, HWND hwndParent);
-	__declspec(dllimport) void LoadReport(void* instance, const wchar_t* reportPath);
+	__declspec(dllimport) void* __stdcall CreateReportViewer();
+	__declspec(dllimport) void __stdcall DestroyReportViewer(void* instance);
+	__declspec(dllimport) void __stdcall InitializeReportViewer(void* instance, HWND hwndParent);
+	__declspec(dllimport) void __stdcall LoadReport(void* instance, const wchar_t* reportPath);
+	__declspec(dllimport) void __stdcall CreateDataSet(void* instance);
+	__declspec(dllimport) void __stdcall AddTable(void* instance, const wchar_t* tableName);
+	__declspec(dllimport) void __stdcall AddColumn(void* instance, const wchar_t* tableName, const wchar_t* columnName, int type);
+	__declspec(dllimport) void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* firstName, const wchar_t* lastName, int age);
 }
 
 CCMFCAppDlgDlg::CCMFCAppDlgDlg(CWnd* pParent /*=nullptr*/)
@@ -127,7 +98,20 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
 
 	// Load the report
 	CString reportPath = L"C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\BlankReport.rpt";
+
+	
 	if (PathFileExists(reportPath)) {
+		// Prepare the DataSet
+		CreateDataSet(m_pReportViewerInstance);
+		AddTable(m_pReportViewerInstance, L"PersonTable");
+		AddColumn(m_pReportViewerInstance, L"PersonTable", L"FirstName", 0); // 0 for String type
+		AddColumn(m_pReportViewerInstance, L"PersonTable", L"LastName", 0);  // 0 for String type
+		AddColumn(m_pReportViewerInstance, L"PersonTable", L"Age", 1);       // 1 for Int32 type
+
+		// Simulate adding rows to the dataset
+		AddRow(m_pReportViewerInstance, L"PersonTable", L"John", L"Doe", 30);
+		AddRow(m_pReportViewerInstance, L"PersonTable", L"Jane", L"Doe", 25);
+
 		LoadReport(m_pReportViewerInstance, reportPath.GetString());
 	}
 	else {
@@ -140,15 +124,7 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
 
 void CCMFCAppDlgDlg::OnSysCommand(UINT nID, LPARAM lParam)
 {
-	if ((nID & 0xFFF0) == IDM_ABOUTBOX)
-	{
-		CAboutDlg dlgAbout;
-		dlgAbout.DoModal();
-	}
-	else
-	{
-		CDialogEx::OnSysCommand(nID, lParam);
-	}
+	CDialogEx::OnSysCommand(nID, lParam);
 }
 
 // If you add a minimize button to your dialog, you will need the code below

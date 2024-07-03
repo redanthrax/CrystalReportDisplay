@@ -5,6 +5,9 @@ using namespace System;
 using namespace System::Windows::Forms;
 using namespace System::Drawing;
 using namespace CrystalDecisions::Windows::Forms;
+using namespace CrystalDecisions::CrystalReports::Engine;
+using namespace CrystalDecisions::Shared;
+using namespace System::Data;
 
 namespace CrystalReportWrapper {
     public ref class ReportViewerControl : public UserControl {
@@ -21,6 +24,21 @@ namespace CrystalReportWrapper {
             }
             catch (Exception^ ex) {
                 System::Diagnostics::Debug::WriteLine("Error setting report source: " + ex->Message);
+                MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+            }
+        }
+
+        void LoadReport(String^ reportPath, DataSet^ dataSet) {
+            System::Diagnostics::Debug::WriteLine("Setting report source with dataset: " + reportPath);
+            try {
+                ReportDocument^ reportDocument = gcnew ReportDocument();
+                reportDocument->Load(reportPath);
+                reportDocument->SetDataSource(dataSet);
+                this->crystalReportViewer->ReportSource = reportDocument;
+                System::Diagnostics::Debug::WriteLine("Report source set successfully with dataset: " + reportPath);
+            }
+            catch (Exception^ ex) {
+                System::Diagnostics::Debug::WriteLine("Error setting report source with dataset: " + ex->Message);
                 MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
             }
         }

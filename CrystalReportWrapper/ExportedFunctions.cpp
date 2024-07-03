@@ -1,19 +1,21 @@
-#include "pch.h"  // Include precompiled header
+#include "pch.h"
 #define EXPORT_DLL
 #include "ExportedFunctions.h"
+#include "ManagedWrapper.h"
 #include <vcclr.h>
-#include "ReportViewerWrapper.h"
 #include <thread>
-#include <exception>  // Include the exception header
-#include <Windows.h>  // For OutputDebugString and MessageBox
+#include <exception>
+#include <Windows.h>
 #include <fstream>
+
+using namespace System::Data;
 
 class ReportViewerWrapperImpl {
 public:
-    gcroot<ReportViewerWrapper^> reportViewer;
+    gcroot<ManagedWrapper^> reportViewer;
 
     ReportViewerWrapperImpl() {
-        reportViewer = gcnew ReportViewerWrapper();
+        reportViewer = gcnew ManagedWrapper();
     }
 
     ~ReportViewerWrapperImpl() {
@@ -29,36 +31,66 @@ void LoadReportThread(ReportViewerWrapperImpl* wrapper, std::wstring reportPath)
     OutputDebugStringW(L"LoadReportThread started\n");
     ::MessageBox(NULL, L"LoadReportThread started", L"Debug", MB_OK);
 
-    // Convert std::wstring to System::String^
     System::String^ managedReportPath = gcnew System::String(reportPath.c_str());
-    System::Diagnostics::Debug::WriteLine("LoadReportThread: " + managedReportPath);
     wrapper->reportViewer->LoadReport(managedReportPath);
     OutputDebugStringW(L"LoadReportThread finished\n");
     ::MessageBox(NULL, L"LoadReportThread finished", L"Debug", MB_OK);
 }
 
 extern "C" {
-    EXPORT_API void* CreateReportViewer() {
+    EXPORT_API void* __stdcall CreateReportViewer() {
         return new ReportViewerWrapperImpl();
     }
 
-    EXPORT_API void DestroyReportViewer(void* instance) {
+    EXPORT_API void __stdcall DestroyReportViewer(void* instance) {
         delete static_cast<ReportViewerWrapperImpl*>(instance);
     }
 
-    EXPORT_API void InitializeReportViewer(void* instance, HWND hwndParent) {
+    EXPORT_API void __stdcall InitializeReportViewer(void* instance, HWND hwndParent) {
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
         wrapper->reportViewer->Initialize(System::IntPtr(hwndParent));
     }
 
-    EXPORT_API void LoadReport(void* instance, const wchar_t* reportPath) {
+    EXPORT_API void __stdcall LoadReport(void* instance, const wchar_t* reportPath) {
         OutputDebugStringW(L"LoadReport called\n");
         ::MessageBox(NULL, L"LoadReport called", L"Debug", MB_OK);
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
 
-        // Convert wchar_t* to std::wstring
         std::wstring reportPathStr(reportPath);
         std::thread loadReportThread(LoadReportThread, wrapper, reportPathStr);
         loadReportThread.detach();
+    }
+
+    EXPORT_API void __stdcall CreateDataSet(void* instance) {
+        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
+        wrapper->reportViewer->CreateDataSet();
+    }
+
+    EXPORT_API void __stdcall AddTable(void* instance, const wchar_t* tableName) {
+        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
+        wrapper->reportViewer->AddTable(gcnew String(tableName));
+    }
+
+    EXPORT_API void __stdcall AddColumn(void* instance, const wchar_t* tableName, const wchar_t* columnName, int type) {
+        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
+        Type^ columnType = nullptr;
+        switch (type) {
+        case 0:
+            columnType = String::typeid;
+            break;
+        case 1:
+            columnType = Int32::typeid;
+            break;
+            // Add more cases if needed
+        default:
+            columnType = String::typeid;
+        }
+        wrapper->reportViewer->AddColumn(gcnew String(tableName), gcnew String(columnName), columnType);
+    }
+
+    EXPORT_API void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* firstName, const wchar_t* lastName, int age) {
+        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
+        array<Object^>^ values = gcnew array<Object^>(3) { gcnew String(firstName), gcnew String(lastName), age };
+        wrapper->reportViewer->AddRow(gcnew String(tableName), values);
     }
 }

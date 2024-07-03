@@ -98,6 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <AdditionalDependencies>$(SolutionDir)$(Configuration)\CrystalReportWrapper.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <Midl>
       <MkTypLibCompatible>false</MkTypLibCompatible>

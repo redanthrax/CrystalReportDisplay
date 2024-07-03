@@ -6,6 +6,7 @@
 using namespace System;
 using namespace System::Windows::Forms;
 using namespace CrystalReportWrapper;
+using namespace System::Data;
 
 public ref class ReportViewerWrapper {
 public:
@@ -17,13 +18,12 @@ public:
         return userControl->Handle;
     }
 
-    void LoadReport(String^ reportPath) {
-        // Ensure the call is made on the UI thread
+    void LoadReport(String^ reportPath, DataSet^ dataset) {
         if (userControl->InvokeRequired) {
-            userControl->Invoke(gcnew Action<String^>(this, &ReportViewerWrapper::LoadReportImpl), reportPath);
+            userControl->Invoke(gcnew Action<String^, DataSet^>(this, &ReportViewerWrapper::LoadReportImpl), reportPath, dataset);
         }
         else {
-            LoadReportImpl(reportPath);
+            LoadReportImpl(reportPath, dataset);
         }
     }
 
@@ -38,7 +38,7 @@ public:
     }
 
 private:
-    void LoadReportImpl(String^ reportPath) {
+    void LoadReportImpl(String^ reportPath, DataSet^ dataset) {
         System::Diagnostics::Debug::WriteLine("Attempting to load report: " + reportPath);
         if (String::IsNullOrEmpty(reportPath) || !System::IO::File::Exists(reportPath)) {
             System::Diagnostics::Debug::WriteLine("Invalid report path: " + reportPath);
@@ -46,7 +46,7 @@ private:
             return;
         }
         try {
-            userControl->LoadReport(reportPath);
+            userControl->LoadReport(reportPath, dataset);
             System::Diagnostics::Debug::WriteLine("Report loaded successfully: " + reportPath);
         }
         catch (Exception^ ex) {
