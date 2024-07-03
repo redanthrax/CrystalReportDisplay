@@ -39,8 +39,6 @@ public:
 
 private:
     void LoadReportImpl(String^ reportPath) {
-        userControl->LoadReport("C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\BlankReport.rpt");
-        /*
         System::Diagnostics::Debug::WriteLine("Attempting to load report: " + reportPath);
         if (String::IsNullOrEmpty(reportPath) || !System::IO::File::Exists(reportPath)) {
             System::Diagnostics::Debug::WriteLine("Invalid report path: " + reportPath);
@@ -55,7 +53,6 @@ private:
             System::Diagnostics::Debug::WriteLine("Error loading report: " + ex->Message);
             MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
         }
-        */
     }
 
     void InitializeImpl(IntPtr hwndParent) {
