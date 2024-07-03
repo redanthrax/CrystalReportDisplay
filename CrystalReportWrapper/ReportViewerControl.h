@@ -42,6 +42,7 @@ namespace CrystalReportWrapper {
                 MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
             }
 
+            //have to do the db login here because this is loaded on a different thread
             System::Diagnostics::Debug::WriteLine("Setting up db login");
             try {
                 auto connectionInfo = gcnew CrystalDecisions::Shared::ConnectionInfo();

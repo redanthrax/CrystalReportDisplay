@@ -136,7 +136,7 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
     // Load the report
     CString reportPath = L"C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\BlankReport.rpt";
     if (PathFileExists(reportPath)) {
-        SetDatabaseLogon(m_pReportViewerInstance, L".", L"AdventureWorks", L"AdventureWorks", L"AdventureWorks");
+        //this doesn't work, loadreport on separate thread SetDatabaseLogon(m_pReportViewerInstance, L".", L"AdventureWorks", L"AdventureWorks", L"AdventureWorks");
         LoadReport(m_pReportViewerInstance, reportPath.GetString());
     }
     else {
