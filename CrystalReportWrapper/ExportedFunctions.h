@@ -16,5 +16,5 @@ extern "C" {
     EXPORT_API void __stdcall CreateDataSet(void* instance);
     EXPORT_API void __stdcall AddTable(void* instance, const wchar_t* tableName);
     EXPORT_API void __stdcall AddColumn(void* instance, const wchar_t* tableName, const wchar_t* columnName, int type);
-    EXPORT_API void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* firstName, const wchar_t* lastName, int age);
+    EXPORT_API void __stdcall ddRow(void* instance, const wchar_t* tableName, const wchar_t* productName);
 }

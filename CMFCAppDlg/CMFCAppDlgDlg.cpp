@@ -24,7 +24,7 @@ extern "C" {
 	__declspec(dllimport) void __stdcall CreateDataSet(void* instance);
 	__declspec(dllimport) void __stdcall AddTable(void* instance, const wchar_t* tableName);
 	__declspec(dllimport) void __stdcall AddColumn(void* instance, const wchar_t* tableName, const wchar_t* columnName, int type);
-	__declspec(dllimport) void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* firstName, const wchar_t* lastName, int age);
+	__declspec(dllimport) void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* productName);
 }
 
 CCMFCAppDlgDlg::CCMFCAppDlgDlg(CWnd* pParent /*=nullptr*/)
@@ -103,14 +103,11 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
 	if (PathFileExists(reportPath)) {
 		// Prepare the DataSet
 		CreateDataSet(m_pReportViewerInstance);
-		AddTable(m_pReportViewerInstance, L"PersonTable");
-		AddColumn(m_pReportViewerInstance, L"PersonTable", L"FirstName", 0); // 0 for String type
-		AddColumn(m_pReportViewerInstance, L"PersonTable", L"LastName", 0);  // 0 for String type
-		AddColumn(m_pReportViewerInstance, L"PersonTable", L"Age", 1);       // 1 for Int32 type
+		AddTable(m_pReportViewerInstance, L"Product");
+		AddColumn(m_pReportViewerInstance, L"Product", L"Name", 0); // 0 for String type
 
 		// Simulate adding rows to the dataset
-		AddRow(m_pReportViewerInstance, L"PersonTable", L"John", L"Doe", 30);
-		AddRow(m_pReportViewerInstance, L"PersonTable", L"Jane", L"Doe", 25);
+		AddRow(m_pReportViewerInstance, L"Product", L"Test from native.");
 
 		LoadReport(m_pReportViewerInstance, reportPath.GetString());
 	}

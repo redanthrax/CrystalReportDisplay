@@ -88,9 +88,9 @@ extern "C" {
         wrapper->reportViewer->AddColumn(gcnew String(tableName), gcnew String(columnName), columnType);
     }
 
-    EXPORT_API void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* firstName, const wchar_t* lastName, int age) {
+    EXPORT_API void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* productName) {
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
-        array<Object^>^ values = gcnew array<Object^>(3) { gcnew String(firstName), gcnew String(lastName), age };
+        array<Object^>^ values = gcnew array<Object^>(1) { gcnew String(productName) };
         wrapper->reportViewer->AddRow(gcnew String(tableName), values);
     }
 }
