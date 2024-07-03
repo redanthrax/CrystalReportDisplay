@@ -42,6 +42,10 @@ public:
         table->Rows->Add(row);
     }
 
+    void SetDatabaseLogon(String^ server, String^ database, String^ userId, String^ password) {
+        reportViewer->SetDatabaseLogon(server, database, userId, password);
+    }
+
     DataSet^ GetDataSet() {
         return dataSet;
     }

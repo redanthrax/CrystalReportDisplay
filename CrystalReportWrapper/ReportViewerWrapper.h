@@ -37,6 +37,10 @@ public:
         }
     }
 
+    void SetDatabaseLogon(String^ server, String^ database, String^ userId, String^ password) {
+        userControl->SetDatabaseLogon(server, database, userId, password);
+    }
+
 private:
     void LoadReportImpl(String^ reportPath, DataSet^ dataset) {
         System::Diagnostics::Debug::WriteLine("Attempting to load report: " + reportPath);

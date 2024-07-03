@@ -29,9 +29,9 @@ namespace CrystalReportWrapper {
         }
 
         void LoadReport(String^ reportPath, DataSet^ dataSet) {
+            ReportDocument^ reportDocument = gcnew ReportDocument();
             System::Diagnostics::Debug::WriteLine("Setting report source with dataset: " + reportPath);
             try {
-                ReportDocument^ reportDocument = gcnew ReportDocument();
                 reportDocument->Load(reportPath);
                 reportDocument->SetDataSource(dataSet);
                 this->crystalReportViewer->ReportSource = reportDocument;
@@ -39,6 +39,49 @@ namespace CrystalReportWrapper {
             }
             catch (Exception^ ex) {
                 System::Diagnostics::Debug::WriteLine("Error setting report source with dataset: " + ex->Message);
+                MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+            }
+
+            System::Diagnostics::Debug::WriteLine("Setting up db login");
+            try {
+                auto connectionInfo = gcnew CrystalDecisions::Shared::ConnectionInfo();
+                connectionInfo->ServerName = ".";
+                connectionInfo->DatabaseName = "AdventureWorks";
+                connectionInfo->UserID = "AdventureWorks";
+                connectionInfo->Password = "AdventureWorks";
+                CrystalDecisions::CrystalReports::Engine::Tables^ tables = reportDocument->Database->Tables;
+                for each (CrystalDecisions::CrystalReports::Engine::Table ^ table in tables) {
+                    auto logonInfo = table->LogOnInfo;
+                    logonInfo->ConnectionInfo = connectionInfo;
+                    table->ApplyLogOnInfo(logonInfo);
+                }
+            }
+            catch (Exception^ ex) {
+                System::Diagnostics::Debug::WriteLine(ex->Message);
+                MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+            }
+        }
+
+        void SetDatabaseLogon(String^ server, String^ database, String^ userId, String^ password) {
+            System::Diagnostics::Debug::WriteLine("Setting database logon info.");
+            try {
+                auto reportDocument = dynamic_cast<CrystalDecisions::CrystalReports::Engine::ReportDocument^>(crystalReportViewer->ReportSource);
+                if (reportDocument != nullptr) {
+                    auto connectionInfo = gcnew CrystalDecisions::Shared::ConnectionInfo();
+                    connectionInfo->ServerName = server;
+                    connectionInfo->DatabaseName = database;
+                    connectionInfo->UserID = userId;
+                    connectionInfo->Password = password;
+                    CrystalDecisions::CrystalReports::Engine::Tables^ tables = reportDocument->Database->Tables;
+                    for each (CrystalDecisions::CrystalReports::Engine::Table^ table in tables) {
+                        auto logonInfo = table->LogOnInfo;
+                        logonInfo->ConnectionInfo = connectionInfo;
+                        table->ApplyLogOnInfo(logonInfo);
+                    }
+                }
+            }
+            catch (Exception^ ex) {
+                System::Diagnostics::Debug::WriteLine("Error setting database logon info: " + ex->Message);
                 MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
             }
         }
