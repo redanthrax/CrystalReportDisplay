@@ -27,7 +27,7 @@ extern "C" {
     __declspec(dllimport) void __stdcall AddTable(void* instance, const wchar_t* tableName);
     __declspec(dllimport) void __stdcall AddColumn(void* instance, const wchar_t* tableName, const wchar_t* columnName, int type);
     __declspec(dllimport) void __stdcall AddRow(void* instance, const wchar_t* tableName, const wchar_t* productName);
-    __declspec(dllimport) void __stdcall SetDatabaseLogon(void* instance, const wchar_t* server, const wchar_t* database, const wchar_t* userId, const wchar_t* password);
+    __declspec(dllimport) void __stdcall SetCredentials(void* instance, const wchar_t* server);
 }
 
 CCMFCAppDlgDlg::CCMFCAppDlgDlg(CWnd* pParent /*=nullptr*/)
@@ -137,6 +137,7 @@ BOOL CCMFCAppDlgDlg::OnInitDialog()
     CString reportPath = L"C:\\Users\\ggagnon\\source\\CrystalReportDisplay\\BlankReport.rpt";
     if (PathFileExists(reportPath)) {
         //this doesn't work, loadreport on separate thread SetDatabaseLogon(m_pReportViewerInstance, L".", L"AdventureWorks", L"AdventureWorks", L"AdventureWorks");
+        SetCredentials(m_pReportViewerInstance, L".");
         LoadReport(m_pReportViewerInstance, reportPath.GetString());
     }
     else {

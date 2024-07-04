@@ -17,8 +17,12 @@ public:
         reportViewer->Initialize(hwndParent);
     }
 
+    void SetCredentials(String^ s) {
+        server = s;
+    }
+
     void LoadReport(String^ reportPath) {
-        reportViewer->LoadReport(reportPath, dataSet);
+        reportViewer->LoadReport(reportPath, dataSet, server);
     }
 
     void CreateDataSet() {
@@ -42,10 +46,6 @@ public:
         table->Rows->Add(row);
     }
 
-    void SetDatabaseLogon(String^ server, String^ database, String^ userId, String^ password) {
-        reportViewer->SetDatabaseLogon(server, database, userId, password);
-    }
-
     DataSet^ GetDataSet() {
         return dataSet;
     }
@@ -57,4 +57,5 @@ public:
 private:
     ReportViewerWrapper^ reportViewer;
     DataSet^ dataSet;
+    String^ server;
 };

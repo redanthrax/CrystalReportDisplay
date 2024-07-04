@@ -16,19 +16,7 @@ namespace CrystalReportWrapper {
             InitializeComponent();
         }
 
-        void LoadReport(String^ reportPath) {
-            System::Diagnostics::Debug::WriteLine("Setting report source: " + reportPath);
-            try {
-                this->crystalReportViewer->ReportSource = reportPath;
-                System::Diagnostics::Debug::WriteLine("Report source set successfully: " + reportPath);
-            }
-            catch (Exception^ ex) {
-                System::Diagnostics::Debug::WriteLine("Error setting report source: " + ex->Message);
-                MessageBox::Show(ex->Message, "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-            }
-        }
-
-        void LoadReport(String^ reportPath, DataSet^ dataSet) {
+        void LoadReport(String^ reportPath, DataSet^ dataSet, String^ server) {
             ReportDocument^ reportDocument = gcnew ReportDocument();
             System::Diagnostics::Debug::WriteLine("Setting report source with dataset: " + reportPath);
             try {
@@ -46,7 +34,7 @@ namespace CrystalReportWrapper {
             System::Diagnostics::Debug::WriteLine("Setting up db login");
             try {
                 auto connectionInfo = gcnew CrystalDecisions::Shared::ConnectionInfo();
-                connectionInfo->ServerName = ".";
+                connectionInfo->ServerName = server;
                 connectionInfo->DatabaseName = "AdventureWorks";
                 connectionInfo->UserID = "AdventureWorks";
                 connectionInfo->Password = "AdventureWorks";

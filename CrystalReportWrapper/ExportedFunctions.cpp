@@ -55,10 +55,14 @@ extern "C" {
         OutputDebugStringW(L"LoadReport called\n");
         ::MessageBox(NULL, L"LoadReport called", L"Debug", MB_OK);
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
-
         std::wstring reportPathStr(reportPath);
         std::thread loadReportThread(LoadReportThread, wrapper, reportPathStr);
         loadReportThread.detach();
+    }
+
+    EXPORT_API void __stdcall SetCredentials(void* instance, const wchar_t* server) {
+        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
+        wrapper->reportViewer->SetCredentials(gcnew String(server));
     }
 
     EXPORT_API void __stdcall CreateDataSet(void* instance) {
@@ -92,19 +96,5 @@ extern "C" {
         ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
         array<Object^>^ values = gcnew array<Object^>(1) { gcnew String(productName) };
         wrapper->reportViewer->AddRow(gcnew String(tableName), values);
-    }
-
-    EXPORT_API void __stdcall SetDatabaseLogon(void* instance, const wchar_t* server, const wchar_t* database, const wchar_t* userId, const wchar_t* password) {
-        OutputDebugString(L"Set database login called");
-        std::wstring server_s(server);
-        std::wstring database_s(database);
-        std::wstring userId_s(userId);
-        std::wstring password_s(password);
-        System::String^ server_p = gcnew System::String(server_s.c_str());
-        System::String^ database_p = gcnew System::String(database_s.c_str());
-        System::String^ userId_p = gcnew System::String(userId_s.c_str());
-        System::String^ password_p = gcnew System::String(password_s.c_str());
-        ReportViewerWrapperImpl* wrapper = static_cast<ReportViewerWrapperImpl*>(instance);
-        wrapper->reportViewer->SetDatabaseLogon(server_p, database_p, userId_p, password_p);
     }
 }

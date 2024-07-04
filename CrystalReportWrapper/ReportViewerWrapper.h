@@ -18,12 +18,12 @@ public:
         return userControl->Handle;
     }
 
-    void LoadReport(String^ reportPath, DataSet^ dataset) {
+    void LoadReport(String^ reportPath, DataSet^ dataset, String^ server) {
         if (userControl->InvokeRequired) {
-            userControl->Invoke(gcnew Action<String^, DataSet^>(this, &ReportViewerWrapper::LoadReportImpl), reportPath, dataset);
+            userControl->Invoke(gcnew Action<String^, DataSet^, String^>(this, &ReportViewerWrapper::LoadReportImpl), reportPath, dataset, server);
         }
         else {
-            LoadReportImpl(reportPath, dataset);
+            LoadReportImpl(reportPath, dataset, server);
         }
     }
 
@@ -37,12 +37,8 @@ public:
         }
     }
 
-    void SetDatabaseLogon(String^ server, String^ database, String^ userId, String^ password) {
-        userControl->SetDatabaseLogon(server, database, userId, password);
-    }
-
 private:
-    void LoadReportImpl(String^ reportPath, DataSet^ dataset) {
+    void LoadReportImpl(String^ reportPath, DataSet^ dataset, String^ server) {
         System::Diagnostics::Debug::WriteLine("Attempting to load report: " + reportPath);
         if (String::IsNullOrEmpty(reportPath) || !System::IO::File::Exists(reportPath)) {
             System::Diagnostics::Debug::WriteLine("Invalid report path: " + reportPath);
@@ -50,7 +46,7 @@ private:
             return;
         }
         try {
-            userControl->LoadReport(reportPath, dataset);
+            userControl->LoadReport(reportPath, dataset, server);
             System::Diagnostics::Debug::WriteLine("Report loaded successfully: " + reportPath);
         }
         catch (Exception^ ex) {
